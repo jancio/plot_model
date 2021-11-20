@@ -40,10 +40,10 @@ def check_pydot():
 
 
 def is_wrapped_model(layer):
-  from tensorflow.python.keras.engine import network
+  from tensorflow.python.keras.engine import functional
   from tensorflow.python.keras.layers import wrappers
   return (isinstance(layer, wrappers.Wrapper) and
-          isinstance(layer.layer, network.Network))
+          isinstance(layer.layer, functional.Functional))
 
 
 def add_edge(dot, src, dst, output_shape=None):
@@ -88,7 +88,7 @@ def model_to_dot(model,
   """
   from tensorflow.python.keras.layers import wrappers
   from tensorflow.python.keras.engine import sequential
-  from tensorflow.python.keras.engine import network
+  from tensorflow.python.keras.engine import functional
 
   if not check_pydot():
     if 'IPython.core.magics.namespace' in sys.modules:
@@ -142,7 +142,7 @@ def model_to_dot(model,
         pass
 
     if isinstance(layer, wrappers.Wrapper):
-      if expand_nested and isinstance(layer.layer, network.Network):
+      if expand_nested and isinstance(layer.layer, functional.Functional):
         submodel_wrapper = model_to_dot(layer.layer, show_shapes,
                                         show_layer_names, rankdir,
                                         expand_nested,
@@ -157,7 +157,7 @@ def model_to_dot(model,
         child_class_name = layer.layer.__class__.__name__
         class_name = '{}({})'.format(class_name, child_class_name)
 
-    if expand_nested and isinstance(layer, network.Network):
+    if expand_nested and isinstance(layer, functional.Functional):
       submodel_not_wrapper = model_to_dot(layer, show_shapes,
                                           show_layer_names, rankdir,
                                           expand_nested,
@@ -276,7 +276,7 @@ def model_to_dot(model,
                                                       outputlabels)
  
 
-    if not expand_nested or not isinstance(layer, network.Network):
+    if not expand_nested or not isinstance(layer, functional.Functional):
       if color == True:
         inputs = re.compile('input')
         conv = re.compile('conv')
@@ -342,10 +342,10 @@ def model_to_dot(model,
               add_edge(dot, inbound_layer_id, layer_id)
           else:
             # if inbound_layer is not Model or wrapped Model
-            if (not isinstance(inbound_layer, network.Network) and
+            if (not isinstance(inbound_layer, functional.Functional) and
                 not is_wrapped_model(inbound_layer)):
               # if current layer is not Model or wrapped Model
-              if (not isinstance(layer, network.Network) and
+              if (not isinstance(layer, functional.Functional) and
                   not is_wrapped_model(layer)):
                 assert dot.get_node(inbound_layer_id)
                 assert dot.get_node(layer_id)
@@ -357,7 +357,7 @@ def model_to_dot(model,
                 elif style == 1:
                   add_edge(dot, inbound_layer_id, layer_id)
               # if current layer is Model
-              elif isinstance(layer, network.Network):
+              elif isinstance(layer, functional.Functional):
                 if style == 0:
                   add_edge(dot, inbound_layer_id,
                           sub_n_first_node[layer.name].get_name(),
@@ -379,9 +379,9 @@ def model_to_dot(model,
                   name = sub_w_first_node[layer.layer.name].get_name()
                   add_edge(dot, layer_id, name)
             # if inbound_layer is Model
-            elif isinstance(inbound_layer, network.Network):
+            elif isinstance(inbound_layer, functional.Functional):
               name = sub_n_last_node[inbound_layer.name].get_name()
-              if isinstance(layer, network.Network):
+              if isinstance(layer, functional.Functional):
                 output_name = sub_n_first_node[layer.name].get_name()
                 if style == 0:
                   try:
