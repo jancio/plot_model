@@ -41,8 +41,8 @@ def check_pydot():
 
 def is_wrapped_model(layer):
   from tensorflow.python.keras.engine import functional
-  from tensorflow.python.keras.layers import wrappers
-  return (isinstance(layer, wrappers.Wrapper) and
+  from tensorflow.keras.layers import Wrapper
+  return (isinstance(layer, Wrapper) and
           isinstance(layer.layer, functional.Functional))
 
 
@@ -86,7 +86,7 @@ def model_to_dot(model,
   Raises:
     ImportError: if graphviz or pydot are not available.
   """
-  from tensorflow.python.keras.layers import wrappers
+  from tensorflow.keras.layers import Wrapper
   from tensorflow.python.keras.engine import sequential
   from tensorflow.python.keras.engine import functional
 
@@ -124,7 +124,7 @@ def model_to_dot(model,
   elif isinstance(model, sequential.Sequential):
     if not model.built:
       model.build()
-  layers = model._layers
+  layers = model.layers
   num_layers = len(layers)
 
   # Create graph nodes.
@@ -141,7 +141,7 @@ def model_to_dot(model,
     except:
         pass
 
-    if isinstance(layer, wrappers.Wrapper):
+    if isinstance(layer, Wrapper):
       if expand_nested and isinstance(layer.layer, functional.Functional):
         submodel_wrapper = model_to_dot(layer.layer, show_shapes,
                                         show_layer_names, rankdir,
