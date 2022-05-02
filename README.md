@@ -60,13 +60,13 @@ sudo python setup.py install
 API is similar to tensorflow.keras.utils.plot_model
 
 ```python
-from plot_model import plot_model
-plot_model(model)
+from plot_model.plot_model import plot_model as color_plot_model
+color_plot_model(model)
 ```
 
 default parameters:
 ```python
-plot_model(model, to_file='model.png', show_shapes=True, show_layer_names=False, rankdir='TB', expand_nested=False, style=0, color=True, dpi=96)
+color_plot_model(model, to_file='model.png', show_shapes=True, show_layer_names=False, rankdir='TB', expand_nested=False, style=0, color=True, dpi=96)
 ```
 
 **color**: whether to display color. Default True.
